@@ -1,0 +1,16 @@
+#!/bin/bash
+
+here=$(pwd)
+echo $here
+cooker=$(mktemp -d)
+echo $cooker
+cd $cooker
+cat /sys/firmware/acpi/tables/DSDT >  dsdt.dat
+iasl -d dsdt.dat 1&> /dev/null 2&> /dev/null 
+sed '/_WDG/,/Name/!d' dsdt.dsl  | sed '/{/,/}/!d' | grep -v } | grep -v { > wmi.dump
+/usr/lib/wmidump < wmi.dump | strings > wmi.output
+ cat wmi.output
+ 
+ cd $here
+ rm -rf $cooker
+ pwd
